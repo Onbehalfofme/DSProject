@@ -201,7 +201,6 @@ if __name__ == '__main__':
     scheduler = BackgroundScheduler()
     replication_factor = 3
     job = scheduler.add_job(find_datanodes, 'interval', seconds=300)
-    scheduler.start()
     job = scheduler.add_job(heartbeat, 'interval', seconds=30)
     scheduler.start()
     app.run(host='0.0.0.0', port=80, debug=True, use_reloader=False)
