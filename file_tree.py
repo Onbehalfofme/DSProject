@@ -111,12 +111,13 @@ class FileTree:
         else:
             return None
 
-    def recursive_recover(self, current_level, datanode):
-        # current_level = self.root
+    def recursive_recover(self, current_level, datanode, path):
+        if path != '/':
+            path += '/'
         for node in current_level.children:
             current_node = current_level.children.get(node)
             if current_node.is_dir:
-                self.recursive_recover(current_node, datanode)
+                self.recursive_recover(current_node, datanode, path + current_node.name)
             else:
                 replica_servers = current_node.location
                 if datanode in replica_servers:
@@ -124,10 +125,9 @@ class FileTree:
                     if not replica_servers == []:
                         try:
                             requests.get("http://" + random.choice(replica_servers) + "/replicate",
-                                         headers={'address': datanode})
+                                         headers={'address': datanode, 'path': path + current_node.name})
                         except requests.exceptions.RequestException:
                             pass
-
 
 def request_delete(datanode, path, is_dir):
     if is_dir:
@@ -148,14 +148,6 @@ def request_delete(datanode, path, is_dir):
 def request_info(datanode, path):
     try:
         response = requests.get("http://" + datanode + "/info", headers={'path': path})
-    except requests.exceptions.RequestException:
-        return Response(status=500)
-
-    return response
-
-def recover(source, target, path):
-    try:
-        response = requests.get("http://" + source + "/replicate", headers={'address': target, 'path': path})
     except requests.exceptions.RequestException:
         return Response(status=500)
 
