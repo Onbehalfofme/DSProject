@@ -1,0 +1,5 @@
+FROM python:3
+WORKDIR datanode
+ADD datanode.py .
+RUN pip install flask
+CMD ["python" "./datanode.py"]

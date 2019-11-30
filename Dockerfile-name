@@ -1,0 +1,6 @@
+FROM python:3
+WORKDIR namenode
+ADD namenode.py .
+ADD file_tree.py .
+RUN pip install flask
+CMD ["python" "./namenode.py"]
