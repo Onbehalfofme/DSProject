@@ -23,8 +23,9 @@ def find_datanodes():
         except requests.exceptions.RequestException:
             continue
 
-        datanodes.append(ip)
-        print(ip + " success")
+        if not ip in datanodes:
+            datanodes.append(ip)
+            print(ip + " success")
 
 
 def heartbeat():
