@@ -3,4 +3,7 @@ WORKDIR namenode
 ADD namenode.py .
 ADD file_tree.py .
 RUN pip install flask
+RUN pip install requests
+RUN pip install apscheduler
+RUN pip install flask_cors
 CMD ["python", "./namenode.py"]
