@@ -108,7 +108,9 @@ def upload_file():
 def health():
     global namenode
     namenode = 'http://' + request.remote_addr
-    return Response(status=200)
+    f = requests.request('GET', 'http://myip.dnsomatic.com')
+    ip = f.text
+    return Response(status=200, headers={'ip': str(ip)})
 
 
 @app.route('/delete', methods=['GET'])
