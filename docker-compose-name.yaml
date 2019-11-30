@@ -2,7 +2,7 @@ version: '3'
 
 services:
   namenode:
-    image: onbehalfofme/dfs_namenode:latest
+    image: onbehalfofme/dfs-namenode:latest
     deploy:
       replicas: 1
       restart_policy:
