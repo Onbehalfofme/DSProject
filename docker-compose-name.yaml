@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  datanode:
+  namenode:
     image: onbehalfofme/dfs_namenode:latest
     deploy:
       replicas: 1
