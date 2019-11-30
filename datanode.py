@@ -14,6 +14,7 @@ file_names = {}
 files = []
 free_index = 0
 namenode = '10.91.86.17:5000'
+base_path ='/ds'
 
 
 def create_dir(path):
@@ -27,7 +28,7 @@ def create_dir(path):
 
 @app.route('/upload', methods=['POST'])
 def download_file():
-    path = request.headers.get('File-Name', type=str)
+    path = base_path+request.headers.get('File-Name', type=str)
     file_id = request.headers.get('File-Id', type=int)
     chunk_id = request.headers.get('Chunk-Id', type=int)
     chunk_length = request.headers.get('Chunk-Number', type=int)
@@ -76,7 +77,7 @@ def download_file():
 
 @app.route('/create', methods=['GET'])
 def create_file():
-    path = request.headers.get('File-Name', type=str)
+    path = base_path+request.headers.get('File-Name', type=str)
     create_dir(path)
     replications = request.headers.get('Replications', type=int)
     address = None
@@ -97,7 +98,7 @@ def create_file():
 
 @app.route('/download', methods=['GET'])
 def upload_file():
-    path = request.headers.get('File-Name', type=str)
+    path = base_path+request.headers.get('File-Name', type=str)
     with open(path, 'rb') as fp:
         data = fp.read()
     return Response(status=200, response=data)
@@ -112,7 +113,7 @@ def health():
 
 @app.route('/delete', methods=['GET'])
 def delete():
-    path = request.headers.get('path')
+    path = base_path+request.headers.get('path')
     os.remove(path)
     return Response(status=200)
 
@@ -120,13 +121,13 @@ def delete():
 @app.route('/rmdir')
 def rmdir():
     path = request.headers.get('path')
-    os.system('rm -rf ' + path)
+    os.system('rm -rf ' + base_path+path)
     return Response(status=200)
 
 
 @app.route('/info', methods=['GET'])
 def file_info():
-    path = request.headers.get('path')
+    path = base_path+request.headers.get('path')
     st = os.stat(path)
     data = {'size': str(st.st_size), 'last_accessed': str(st.st_atime), 'last_modified': str(st.st_mtime)}
     return Response(status=200, response=json.dumps(data))
@@ -134,8 +135,8 @@ def file_info():
 
 @app.route('/copy', methods=['GET'])
 def copy():
-    old_path = request.headers.get('File-Name-Old')
-    new_path = request.headers.get('File-Name-New')
+    old_path = base_path+request.headers.get('File-Name-Old')
+    new_path = base_path+request.headers.get('File-Name-New')
     create_dir(new_path)
     os.system('sudo cp ' + old_path + ' ' + new_path)
     return Response(200)
@@ -143,14 +144,14 @@ def copy():
 
 @app.route('/init', methods=['get'])
 def init():
-    os.system('rm -rf /')
+    os.system('rm -rf '+base_path)
     total, used, free = shutil.disk_usage('/')
     return Response(status=200, response=str(free).encode())
 
 
 @app.route('/replicate', methods=['GET'])
 def replicate():
-    path = request.headers.get('path')
+    path = base_path+request.headers.get('path')
     address = request.headers.get('address')
     with open(path, 'rb') as fp:
         chunk = fp.read(1024)
@@ -167,8 +168,8 @@ def replicate():
 
 @app.route('/move', methods=['GET'])
 def move():
-    old_path = request.headers.get('File-Name-Old')
-    new_path = request.headers.get('File-Name-New')
+    old_path = base_path+request.headers.get('File-Name-Old')
+    new_path = base_path+request.headers.get('File-Name-New')
     create_dir(new_path)
     os.system('sudo mv ' + old_path + ' ' + new_path)
     return Response(200)
