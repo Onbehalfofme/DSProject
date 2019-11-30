@@ -41,7 +41,7 @@ def heartbeat():
 
 def synchronize(node):
     requests.get("http://" + node + "/init")
-    file_tree.recursive_recover(file_tree.root, node)
+    file_tree.recursive_recover(file_tree.root, node, '/')
 
 @app.route('/init')
 def init():
