@@ -2,7 +2,7 @@ from flask import Flask, Response, request
 import requests
 import random
 from apscheduler.schedulers.background import BackgroundScheduler
-from FileTree import FileTree
+from file_tree import FileTree
 from flask_cors import CORS
 import json
 app = Flask(__name__)
