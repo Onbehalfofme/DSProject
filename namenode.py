@@ -19,14 +19,13 @@ def find_datanodes():
     for i in range(256):
         ip = subnet + str(i) + ":5000"
         try:
-            requests.get("http://" + ip + "/health", timeout=5)
+            response = requests.get("http://" + ip + "/health", timeout=5)
+            node = response.headers.get('ip')
         except requests.exceptions.RequestException:
             continue
-
-        if not ip in datanodes:
-            datanodes.append(ip)
+        if not node in datanodes:
+            datanodes.append(node)
             print(ip + " success")
-
 
 def heartbeat():
     for node in datanodes:
