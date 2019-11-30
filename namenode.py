@@ -15,7 +15,7 @@ def hello_world():
 
 
 def find_datanodes():
-    subnet = '127.31.0.'
+    subnet = '10.0.6.'
     for i in range(256):
         ip = subnet + str(i) + ":5000"
         try:
@@ -31,11 +31,11 @@ def heartbeat():
     for node in datanodes:
         try:
             requests.get("http://" + node + "/health", timeout=5)
-            if deadnodes.__contains__(node):
+            if node in deadnodes:
                 synchronize(node)
                 deadnodes.remove(node)
         except requests.exceptions.RequestException:
-            if not deadnodes.__contains__(node):
+            if not node in deadnodes:
                 deadnodes.append(node)
 
 
