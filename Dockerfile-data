@@ -2,4 +2,6 @@ FROM python:3
 WORKDIR datanode
 ADD datanode.py .
 RUN pip install flask
+RUN pip install flask_cors
+RUN pip install requests
 CMD ["python", "./datanode.py"]
