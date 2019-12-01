@@ -15,7 +15,7 @@ def hello_world():
 
 
 def find_datanodes():
-    subnet = '10.0.6.'
+    subnet = '10.0.1.'
     for i in range(256):
         ip = subnet + str(i) + ":5000"
         try:
