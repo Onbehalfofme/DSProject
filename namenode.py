@@ -20,7 +20,7 @@ def find_datanodes():
         ip = subnet + str(i) + ":5000"
         try:
             response = requests.get("http://" + ip + "/health", timeout=5)
-            node = response.headers.get('ip')
+            node = response.headers.get('ip') + ":5000"
         except requests.exceptions.RequestException:
             continue
         if not node in datanodes:
