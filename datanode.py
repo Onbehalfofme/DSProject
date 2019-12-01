@@ -108,7 +108,7 @@ def upload_file():
 def health():
     global namenode
     namenode = 'http://' + request.remote_addr
-    f = requests.request('GET', 'http://myip.dnsomatic.com')
+    f = requests.request('GET', 'https://ident.me')
     ip = f.text
     return Response(status=200, headers={'ip': str(ip)})
 
