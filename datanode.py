@@ -29,7 +29,7 @@ def create_dir(path):
 @app.route('/upload', methods=['POST'])
 def download_file():
     path = base_path + request.headers.get('File-Name', type=str)
-    path1 = base_path + request.headers.get('File-Name', type=str)
+    path1 = request.headers.get('File-Name', type=str)
     file_id = request.headers.get('File-Id', type=int)
     chunk_id = request.headers.get('Chunk-Id', type=int)
     chunk_length = request.headers.get('Chunk-Number', type=int)
@@ -145,13 +145,13 @@ def copy():
     old_path = base_path + request.headers.get('File-Name-Old')
     new_path = base_path + request.headers.get('File-Name-New')
     create_dir(new_path)
-    os.system('sudo cp ' + old_path + ' ' + new_path)
+    os.system('cp ' + old_path + ' ' + new_path)
     return Response(200)
 
 
 @app.route('/init', methods=['get'])
 def init():
-    os.system('sudo rm -rf ' + base_path)
+    os.system('rm -rf ' + base_path)
     total, used, free = shutil.disk_usage('/')
     return Response(status=200, response=str(free).encode())
 
@@ -178,7 +178,7 @@ def move():
     old_path = base_path + request.headers.get('File-Name-Old')
     new_path = base_path + request.headers.get('File-Name-New')
     create_dir(new_path)
-    os.system('sudo mv ' + old_path + ' ' + new_path)
+    os.system('mv ' + old_path + ' ' + new_path)
     return Response(200)
 
 
