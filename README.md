@@ -36,33 +36,33 @@ As it was said before, the system consists of three components, that interact wi
 ![](image.png )
 
 #### Namenode -> Datanode
-* GET/health - namenode checks the datanode every 30 sec
-* GET/info - namenode requests a file info from datanode
-* GET/delete - namenode tells datanode to delete a file
-* GET/init - namenode tells datanode to initialize a storage 
-* GET/rmdir - namenode tells datanode to delete a directory
-* GET/move - namenode tells datanode to move file
-* GET/copy - namenode tells datanode to copy file
+* GET /health - namenode checks the datanode every 30 sec
+* GET /info - namenode requests a file info from datanode
+* GET /delete - namenode tells datanode to delete a file
+* GET /init - namenode tells datanode to initialize a storage 
+* GET /rmdir - namenode tells datanode to delete a directory
+* GET /move - namenode tells datanode to move file
+* GET /copy - namenode tells datanode to copy file
 
 #### Datanode -> Namenode
-* GET/replicate - datanode asks a namenode where to send a replication
+* GET /replicate - datanode asks a namenode where to send a replication
 
 #### Client -> Namenode
-* GET/init - initialize new storage (delete everything and return the available size)
-* GET/create - create an empty file
-* GET/read - get a list of datanodes that contain such file (from where to download a file)
-* GET/write - get a datanode IP (where to upload a file)
-* GET/delete_file - delete a file from DFS
-* GET/info - get information about a file
-* GET/copy - create a copy of file
-* GET/move - move a file
-* GET/cd - change the current directory
-* GET/ls - return a list of stored files/directories
-* GET/mkdir - create a new directory
-* GET/delete_dir - delete a directory
+* GET /init - initialize new storage (delete everything and return the available size)
+* GET /create - create an empty file
+* GET /read - get a list of datanodes that contain such file (from where to download a file)
+* GET /write - get a datanode IP (where to upload a file)
+* GET /delete_file - delete a file from DFS
+* GET /info - get information about a file
+* GET /copy - create a copy of file
+* GET /move - move a file
+* GET /cd - change the current directory
+* GET /ls - return a list of stored files/directories
+* GET /mkdir - create a new directory
+* GET /delete_dir - delete a directory
 
 #### Client -> Datanode
-* GET/download - download the file from datanode
-* POST/upload - send a file by chunks (of 1 Mb) to datanode
+* GET /download - download the file from datanode
+* POST /upload - send a file by chunks (of 1 Mb) to datanode
 ---
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
