@@ -48,8 +48,8 @@ def download_file():
         if replications:
             replications += 1
         else:
-            replications = 1
-        if replications < 3:
+            replications = 2
+        if replications < 4:
             r = requests.get('http://' + namenode + '/replicate', headers={'path': path1})
             address = r.headers.get('address')
         file = bytearray()
@@ -58,7 +58,7 @@ def download_file():
             file.extend(bytearray(chunk))
             if address:
                 headers = dict(request.headers)
-                headers.update({'Replications': str(replications + 1), 'Chunk-Id': str(index)})
+                headers.update({'Replications': str(replications), 'Chunk-Id': str(index)})
                 requests.post('http://' + address + '/upload', headers=headers, data=chunk)
                 if index > len(files[current_index]):
                     index = 0
@@ -86,15 +86,15 @@ def create_file():
     if replications:
         replications += 1
     else:
-        replications = 1
-    if replications <= 3:
+        replications = 2
+    if replications <= 4:
         r = requests.get('http://' + namenode + '/replicate', headers={'path': path1})
         address = r.headers.get('address')
     open(path, 'a').close()
     if address:
         headers = dict(request.headers)
-        headers.update({'Replications': str(replications + 1)})
-        requests.post('http://' + address + '/create', headers=headers)
+        headers.update({'Replications': str(replications)})
+        requests.get('http://' + address + '/create', headers=headers)
     return Response(200)
 
 
@@ -157,7 +157,7 @@ def init():
 def replicate():
     path = base_path+request.headers.get('path')
     address = request.headers.get('address')
-    with open(path, 'rb') as fp:
+    with open(base_path+path, 'rb') as fp:
         chunk = fp.read(1024)
         chunk_id = 0
         file_id = randint(0, 1000)
