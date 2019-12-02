@@ -8,10 +8,14 @@ import json
 app = Flask(__name__)
 CORS(app)
 
+datanodes = []
+deadnodes = []
+file_tree = FileTree()
+
 
 @app.route('/')
 def hello_world():
-    return datanodes
+    return str(datanodes)
 
 
 def find_datanodes():
@@ -198,10 +202,7 @@ def delete_dir():
 
 
 if __name__ == '__main__':
-    file_tree = FileTree()
     # datanodes = ['10.91.91.190:5000', '10.91.91.190:5001']
-    datanodes = []
-    deadnodes = []
     scheduler = BackgroundScheduler()
     replication_factor = 3
     job = scheduler.add_job(find_datanodes, 'interval', seconds=300)
