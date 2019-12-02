@@ -18,10 +18,10 @@ base_path = '/dfs'
 
 
 def create_dir(path):
-    paths = path.split('/')
+    paths = path.split('/')[1:]
     current_path = '/'
     for p in paths[:-1]:
-        current_path += p
+        current_path += '/' + p
         if not os.path.exists(current_path):
             os.mkdir(current_path)
 
@@ -65,7 +65,7 @@ def download_file():
                 else:
                     index += 1
         create_dir(path)
-        with open(path, 'wb') as fp:
+        with open(path, 'wb+') as fp:
             fp.write(file)
         del files[current_index]
         del file_names[file_id]
