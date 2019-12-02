@@ -13,8 +13,8 @@ CORS(app)
 file_names = {}
 files = []
 free_index = 0
-namenode = '10.91.86.17:5000'
-base_path ='/ds'
+namenode = ''
+base_path ='/dfs'
 
 
 def create_dir(path):
@@ -29,6 +29,7 @@ def create_dir(path):
 @app.route('/upload', methods=['POST'])
 def download_file():
     path = base_path+request.headers.get('File-Name', type=str)
+    path1= base_path+request.headers.get('File-Name', type=str)
     file_id = request.headers.get('File-Id', type=int)
     chunk_id = request.headers.get('Chunk-Id', type=int)
     chunk_length = request.headers.get('Chunk-Number', type=int)
@@ -49,7 +50,7 @@ def download_file():
         else:
             replications = 1
         if replications < 3:
-            r = requests.get(url='http://' + namenode + '/replicate', headers={'path': path})
+            r = requests.get('http://' + namenode + '/replicate', headers={'path': path1})
             address = r.headers.get('address')
         file = bytearray()
         index = 0
@@ -58,7 +59,7 @@ def download_file():
             if address:
                 headers = dict(request.headers)
                 headers.update({'Replications': str(replications + 1), 'Chunk-Id': str(index)})
-                requests.post(url='http://' + address + '/upload', headers=headers, data=chunk)
+                requests.post('http://' + address + '/upload', headers=headers, data=chunk)
                 if index > len(files[current_index]):
                     index = 0
                 else:
@@ -78,6 +79,7 @@ def download_file():
 @app.route('/create', methods=['GET'])
 def create_file():
     path = base_path+request.headers.get('File-Name', type=str)
+    path1 = request.headers.get('File-Name', type=str)
     create_dir(path)
     replications = request.headers.get('Replications', type=int)
     address = None
@@ -86,13 +88,13 @@ def create_file():
     else:
         replications = 1
     if replications <= 3:
-        r = requests.get(url='http://' + namenode + '/replicate', headers={'path': path})
+        r = requests.get('http://' + namenode + '/replicate', headers={'path': path1})
         address = r.headers.get('address')
     open(path, 'a').close()
     if address:
         headers = dict(request.headers)
         headers.update({'Replications': str(replications + 1)})
-        requests.post(url='http://' + address + '/upload', headers=headers)
+        requests.post('http://' + address + '/create', headers=headers)
     return Response(200)
 
 
@@ -107,7 +109,7 @@ def upload_file():
 @app.route('/health', methods=['GET'])
 def health():
     global namenode
-    namenode = 'http://' + request.remote_addr
+    namenode = request.remote_addr
     f = requests.request('GET', 'https://ident.me')
     ip = f.text
     return Response(status=200, headers={'ip': str(ip)})
@@ -146,7 +148,7 @@ def copy():
 
 @app.route('/init', methods=['get'])
 def init():
-    os.system('rm -rf '+base_path)
+    os.system('sudo rm -rf '+base_path)
     total, used, free = shutil.disk_usage('/')
     return Response(status=200, response=str(free).encode())
 

@@ -8,14 +8,14 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-datanodes = []
+datanodes = ['3.19.123.132:5000', '18.219.40.239:5000', '3.16.255.33:5000', '18.216.134.214:5000']
 deadnodes = []
 file_tree = FileTree()
 
 
 @app.route('/')
 def hello_world():
-    return str(datanodes)
+    return str(datanodes) +'\n' + str(deadnodes)
 
 
 def find_datanodes():
@@ -61,7 +61,6 @@ def init():
         except requests.exceptions.RequestException:
             pass
         result += int(response._content.decode())
-        datanodes = []
         deadnodes = []
     return Response(status=200, response=str(result // 3))
 
@@ -70,7 +69,7 @@ def init():
 def create():
     file_path = request.headers.get('File-Name', type=str)
     datanode = random.choice(datanodes)
-    while datanode not in deadnodes:
+    while datanode in deadnodes and not len(datanodes) == len(deadnodes):
       datanode = random.choice(datanodes)
     # datanode = '10.91.91.190:5000'
     file_tree.add_node(file_path, False, list([datanode]))
@@ -94,7 +93,7 @@ def read():
 def write():
     file_path = request.headers.get('File-Name', type=str)
     datanode = random.choice(datanodes)
-    while datanode not in deadnodes:
+    while datanode in deadnodes and not len(datanodes) == len(deadnodes):
       datanode = random.choice(datanodes)
     # datanode = '10.91.91.190:5000'
     file_tree.add_node(file_path, False, list([datanode]))
