@@ -1,6 +1,7 @@
 # Distributed File System
 >Fault-tolerant file system that supports file reading, writing, copying, moving, deletion and different directory operations.
->Written by Danila Kochan (telegram: @Onbehalfofme), telegram: Mikhail Moiseev (telegram: @lackadacka), Anastasiia Gromova (telegram: @n_whovian)
+
+>Written by Danila Kochan (telegram: @Onbehalfofme), Mikhail Moiseev (telegram: @lackadacka), Anastasiia Gromova (telegram: @n_whovian)
 
 ## Launch the system
 The system consists of three main components: naming server, storage server (in our implementation there are 4 such servers) and client application.
