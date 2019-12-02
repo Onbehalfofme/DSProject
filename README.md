@@ -8,7 +8,7 @@ The system consists of three main components: naming server, storage server (in 
 Naming and storage servers (namenode and datanode) are written in Python and deployed on AWS instances using docker swarm.
 You can find the images here: [datanode](https://hub.docker.com/repository/docker/onbehalfofme/dfs-datanode), [namenode](https://hub.docker.com/repository/docker/onbehalfofme/dfs-namenode).
 Client web-application is written in JavaScript with Vue.js framework. 
-You can launch the dfs client (/client folder):
+You can launch the dfs client (/dfs-client folder):
 ``` 
 # install dependencies
 npm install
