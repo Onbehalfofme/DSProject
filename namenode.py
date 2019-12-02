@@ -11,7 +11,7 @@ CORS(app)
 
 @app.route('/')
 def hello_world():
-    return 'Hello World!'
+    return datanodes
 
 
 def find_datanodes():
@@ -46,6 +46,8 @@ def synchronize(node):
 @app.route('/init')
 def init():
     global file_tree
+    global datanodes
+    global deadnodes
     file_tree = FileTree()
     result = 0
 
@@ -55,6 +57,8 @@ def init():
         except requests.exceptions.RequestException:
             pass
         result += int(response._content.decode())
+        datanodes = []
+        deadnodes = []
     return Response(status=200, response=str(result // 3))
 
 
