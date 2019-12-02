@@ -48,8 +48,8 @@ def download_file():
         if replications:
             replications += 1
         else:
-            replications = 2
-        if replications < 4:
+            replications = 1
+        if replications < 3:
             r = requests.get('http://' + namenode + '/replicate', headers={'path': path1})
             address = r.headers.get('address')
         file = bytearray()
@@ -86,14 +86,14 @@ def create_file():
     if replications:
         replications += 1
     else:
-        replications = 2
-    if replications <= 4:
+        replications = 1
+    if replications < 3:
         try:
             r = requests.get('http://' + namenode + '/replicate', headers={'path': path1})
             address = r.headers.get('address')
         except:
             pass
-    os.system('sudo touch ' + path)
+    os.system('touch ' + path)
     if address:
         headers = dict(request.headers)
         headers.update({'Replications': str(replications)})
