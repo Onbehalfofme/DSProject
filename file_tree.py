@@ -1,7 +1,7 @@
-import json
 import random
+
 import requests
-from flask import Flask, Response
+from flask import Response
 
 
 class FileTree:
@@ -65,7 +65,7 @@ class FileTree:
         for dir in directories:
             current_node = current_node.children.get(dir)
         if current_node != None:
-            return request_info(current_node.location[0], path)
+            return request_info(current_node.location, path)
         else:
             return {}
 
@@ -120,35 +120,37 @@ class FileTree:
                 self.recursive_recover(current_node, datanode, path + current_node.name)
             else:
                 replica_servers = current_node.location
-                if datanode in replica_servers:
-                    replica_servers.remove(datanode)
+                if datanode in replica_servers or len(replica_servers) < 3:
+                    if datanode in replica_servers:
+                        replica_servers.remove(datanode)
                     if not replica_servers == []:
                         try:
                             requests.get("http://" + random.choice(replica_servers) + "/replicate",
-                                         headers={'address': datanode, 'path': path + current_node.name})
+                                         headers={'address': datanode, 'path': path + current_node.name}, timeout=10)
                         except requests.exceptions.RequestException:
                             pass
 
 def request_delete(datanode, path, is_dir):
     if is_dir:
         try:
-            response = requests.get("http://" + datanode + "/rmdir", headers={'path': path})
+            response = requests.get("http://" + datanode + "/rmdir", headers={'path': path}, timeout=10)
         except requests.exceptions.RequestException:
-            return Response(status=500)
+            pass
 
     else:
         try:
-            response = requests.get("http://" + datanode + "/delete", headers={'path': path})
+            response = requests.get("http://" + datanode + "/delete", headers={'path': path}, timeout=10)
         except requests.exceptions.RequestException:
-            return Response(status=500)
-
-    return response
+            pass
 
 
-def request_info(datanode, path):
-    try:
-        response = requests.get("http://" + datanode + "/info", headers={'path': path})
-    except requests.exceptions.RequestException:
-        return Response(status=500)
+
+def request_info(datanodes, path):
+    for node in datanodes:
+        try:
+            response = requests.get("http://" + node + "/info", headers={'path': path}, timeout=5)
+            break;
+        except requests.exceptions.RequestException:
+            continue
 
     return response

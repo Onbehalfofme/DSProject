@@ -8,7 +8,7 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-datanodes = ['3.19.123.132:5000', '18.219.40.239:5000', '3.16.255.33:5000', '18.216.134.214:5000']
+datanodes = ['3.136.157.131:5000', '18.191.130.115:5000', '3.14.73.21:5000']
 deadnodes = []
 file_tree = FileTree()
 
@@ -23,7 +23,7 @@ def find_datanodes():
     for i in range(256):
         ip = subnet + str(i) + ":5000"
         try:
-            response = requests.get("http://" + ip + "/health", timeout=5)
+            response = requests.get("http://" + ip + "/health", timeout=10)
             node = response.headers.get('ip') + ":5000"
         except requests.exceptions.RequestException:
             continue
@@ -34,7 +34,7 @@ def find_datanodes():
 def heartbeat():
     for node in datanodes:
         try:
-            requests.get("http://" + node + "/health", timeout=5)
+            requests.get("http://" + node + "/health", timeout=10)
             if node in deadnodes:
                 synchronize(node)
                 deadnodes.remove(node)
@@ -59,9 +59,9 @@ def init():
         try:
             response = requests.get("http://" + datanode + "/init")
         except requests.exceptions.RequestException:
-            pass
+            continue
         result += int(response._content.decode())
-        deadnodes = []
+    deadnodes = []
     return Response(status=200, response=str(result // 3))
 
 
@@ -128,7 +128,8 @@ def copy():
     file_tree.add_node(new_path, False, nodes)
     for node in nodes:
         try:
-            requests.get("http://" + node + "/copy", headers={'File-Name-Old': file_path, 'File-Name-New': new_path})
+            requests.get("http://" + node + "/copy", headers={'File-Name-Old': file_path, 'File-Name-New': new_path},
+                         timeout=10)
         except requests.exceptions.RequestException:
             pass
 
@@ -139,6 +140,8 @@ def copy():
 def replicate():
     file_path = request.headers.get('path', type=str)
     occupied = file_tree.search_node(file_path)
+    if not occupied:
+        return Response(status=400)
     for dn in datanodes:
         if dn not in occupied and dn not in deadnodes:
             file_tree.update_location(file_path, dn)
@@ -158,7 +161,8 @@ def move():
     file_tree.add_node(new_path, False, nodes)
     for node in nodes:
         try:
-            requests.get("http://" + node + "/move", headers={'File-Name-Old': file_path, 'File-Name-New': new_path})
+            requests.get("http://" + node + "/move", headers={'File-Name-Old': file_path, 'File-Name-New': new_path}
+                         , timeout=10)
         except requests.exceptions.RequestException:
             pass
 
