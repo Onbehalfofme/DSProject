@@ -146,7 +146,7 @@ def copy():
     new_path = base_path + request.headers.get('File-Name-New')
     create_dir(new_path)
     os.system('cp ' + old_path + ' ' + new_path)
-    return Response(200)
+    return Response(status=200)
 
 
 @app.route('/init', methods=['get'])
@@ -159,18 +159,20 @@ def init():
 @app.route('/replicate', methods=['GET'])
 def replicate():
     path = base_path + request.headers.get('path')
+    path1 = request.headers.get('path')
     address = request.headers.get('address')
-    with open(base_path + path, 'rb') as fp:
-        chunk = fp.read(1024)
+    with open(path, 'rb') as fp:
+        chunk = fp.read(1024*1024)
         chunk_id = 0
         file_id = randint(0, 1000)
-        chunk_number = math.ceil(os.path.getsize(path) / 1024)
+        chunk_number = math.ceil(os.path.getsize(path) / (1024*1024))
         while chunk:
             requests.post('http://' + address + '/upload', data=chunk,
-                          headers={'File-Name': path, 'File-Id': file_id, 'Chunk-Id': chunk_id,
+                          headers={'File-Name': path1, 'File-Id': file_id, 'Chunk-Id': chunk_id,
                                    'Chunk-Number': chunk_number, 'Replications': 3})
             chunk_id += 1
-    return Response(200)
+            chunk = fp.read(1024*1024)
+    return Response(status=200)
 
 
 @app.route('/move', methods=['GET'])
@@ -179,7 +181,7 @@ def move():
     new_path = base_path + request.headers.get('File-Name-New')
     create_dir(new_path)
     os.system('mv ' + old_path + ' ' + new_path)
-    return Response(200)
+    return Response(status=200)
 
 
 if __name__ == '__main__':
